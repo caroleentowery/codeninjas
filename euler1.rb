@@ -23,7 +23,6 @@ wholeArray = wholeArray.uniq
 # Adds numbers in wholeArray
 total = 0
 for number in wholeArray
-#	puts number
 	total = total + number
 end
 
