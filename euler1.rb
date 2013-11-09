@@ -28,3 +28,9 @@ end
 
 # Writes total of sum of wholeArray to screen.
 puts total
+
+# Nice job Caroleen.  Good use of the built in Ruby functions.
+#
+# Is there a way you could solve the problem with just one looping over the numbers?
+#
+# Keith
