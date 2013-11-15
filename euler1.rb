@@ -34,16 +34,29 @@ puts total
 
 =end
 
-=======
+#=======
 # Nice job Caroleen.  Good use of the built in Ruby functions.
 #
 # Is there a way you could solve the problem with just one looping over the numbers?
 #
 # Keith
->>>>>>> 9e530a34d54f9c2953a8cabfec254b3bc2acef06
+#>>>>>>> 9e530a34d54f9c2953a8cabfec254b3bc2acef06
 
 # Round 2 of the hw to make it one loop instead of two
 #elminates need to pull out duplicates
+
+# Make a function named euler1 to do the logic
+
+def euler1(range_end, divisor1, divisor2)
+	# .to_i converts the input to integer
+	result = 0
+	for i in 1..range_end.to_i
+		if (i % divisor1.to_i == 0) || (i % divisor2.to_i == 0)
+			result += i
+		end
+	end	
+	return result
+end
 
 # Asks for user input at console
 # .chomp removes extra spaces
@@ -55,13 +68,8 @@ divisor1 = gets.chomp
 puts "Enter the second divisor"
 divisor2 = gets.chomp
 
-# .to_i converts the input to integer
-result = 0
-for i in 1..range_end.to_i
-	if (i % divisor1.to_i == 0) || (i % divisor2.to_i == 0)
-		result += i
-	end
-end
+# Creates var result for being called in the function
+result = euler1(range_end, divisor1, divisor2)
 
 puts "Euler's problem \#1 The result is #{result}"
 
