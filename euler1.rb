@@ -34,6 +34,14 @@ puts total
 
 =end
 
+=======
+# Nice job Caroleen.  Good use of the built in Ruby functions.
+#
+# Is there a way you could solve the problem with just one looping over the numbers?
+#
+# Keith
+>>>>>>> 9e530a34d54f9c2953a8cabfec254b3bc2acef06
+
 # Round 2 of the hw to make it one loop instead of two
 #elminates need to pull out duplicates
 
@@ -56,3 +64,4 @@ for i in 1..range_end.to_i
 end
 
 puts "Euler's problem \#1 The result is #{result}"
+
