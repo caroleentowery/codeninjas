@@ -1,0 +1,73 @@
+Problem Euler
+Solution without a loop
+
+Problem:
+If we list all the natural numbers below 10 that are multiples of 3 or 5, 
+we get 3, 5, 6 and 9. The sum of these multiples is 23.
+
+Find the sum of all the multiples of 3 or 5 below 1000.
+
+Solution Description:
+It is possible to calculate the sum of the numbers that are evenly divisible by a single divisor,
+like 3 in this problem, by using a formula that takes into account the nature of the numberline.
+
+Once you ahve this formula, let's call it F(x), then the anser to the problem is:
+
+F(x) + F(y) - F(x*y)
+
+Where
+X = 3 in this problem
+Y = 5 in this problem
+X*Y = 15.
+
+In other words (Sum of all multiples of 3 + Sum of all multiples of 5 - Sum of all multiple of 15)
+We subtract the sum of the product of the two divisors, because those number would be counted twice:
+
+Example (15 is a multiple of 3 and 5, but should only be counted once.  30 and 45 etc are the same)
+
+So what is the formula F?
+
+Let's considers a smaller range, only up to 100.
+
+When we look at the sum of numbers evenly divisible by 3 we notice a pattern.
+
+  3     6      9              48   51  54              93  96  99
+  |     |      |               |   51  |               |   |   |
+  |     |      |               |- 102 -|               |   |   |
+  |     |      ------------------ 102 ------------------   |   |
+  |     ------------------------- 102 ----------------------   |
+  ------------------------------- 102 --------------------------
+  
+  
+  Range Start: the first number in the range (2 in the given problem)
+  Range End: the last possible number that can be a divisor (999 in the given problem)
+  
+  Divisor: the number you want the total, 3 in this case
+  
+  MagicNumber: 102 in this case, it is the sum of the largest and smalled numbers that are evenly divisible
+  by the divisor (3 and 99 in this case)
+  
+  Lowest Divsor: 3 in this case, it is equal to the divisor.
+  
+  /: Integer division, a division with no remainder. 100 / 3 = 33
+  
+  Highest Divisor: 99 in this case, RangeEnd / Divisor * Divisor
+  
+  MagicNumber = LowestDivisor + HighestDivisor
+  
+  So we know we need some number of 102's, but how many?
+  
+  MagicNumberCount: the number of MagicNumber's in the sum.
+  
+  NumberOfDivisors: the number of number in the range that are evenly divisible by the divisor (the number
+  of number we need to add up to get the answer).
+  
+  NumberOfDivsors = (RangeEnd / Divisor), (100 / 3) = 33
+  
+  float/ : Dividing a number and keeping the remainder, 100 float/ 3 = 33.33333333
+  
+  MagicNumberCount = NumberOfDivisors float/ 2,  33 float/ 2 = 16.5
+  
+  The Answer: Sum of all the number under Range End evenly divisible by Divisor
+  
+  The Answer = MagicNumber * MagicNumberCount, 102 * 16.5 = 1683
