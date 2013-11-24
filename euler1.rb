@@ -47,6 +47,7 @@ puts total
 
 # Make a function named euler1 to do the logic
 
+=begin
 def euler1(range_end, divisor1, divisor2)
 	# .to_i converts the input to integer
 	result = 0
@@ -70,6 +71,35 @@ divisor2 = gets.chomp
 
 # Creates var result for being called in the function
 result = euler1(range_end, divisor1, divisor2)
+
+puts "Euler's problem \#1 The result is #{result}"
+=end
+
+
+# Start of homework part 3 where I don't use a loop to solve Euler #1 *CHT 2013-11-24
+
+def euler_single_divisor(divisor, range_end) #function to do the math for one divisor
+	# .floor gives the lowest integer value
+	return 0.5 * ((range_end - 1) / divisor).floor * ((range_end - 1) / divisor + 1).floor * divisor
+end
+
+def euler_pair_divisor(divisor1, divisor2, range_end) #function to do rest of math with two divisors
+	return (euler_single_divisor(divisor1,range_end) + euler_single_divisor(divisor2,range_end) - euler_single_divisor((divisor1 * divisor2),range_end)).to_i
+end
+
+# Asks for user input at console
+# .chomp removes extra spaces
+# .to_i turns it into an integer
+
+puts "Enter end of range"
+range_end = gets.chomp.to_i
+puts "Enter the first divisor"
+divisor1 = gets.chomp.to_i
+puts "Enter the second divisor"
+divisor2 = gets.chomp.to_i
+
+# Creates var result for being called in the function
+result = euler_pair_divisor(divisor1, divisor2, range_end)
 
 puts "Euler's problem \#1 The result is #{result}"
 
