@@ -5,10 +5,10 @@ puts "\e[H\e[2J"
 
 #Ask for players names, capitalizes them, and says welcome
 print "Enter name for player 1: "
-player1_name = gets.chomp.capitalize!()
+name1 = gets.chomp.capitalize!()
 print "Enter name for player 2: "
-player2_name = gets.chomp.capitalize!()
-puts "\n" + "Welcome #{player1_name} and #{player2_name} to the Game of War." + "\n" + "\n"
+name2 = gets.chomp.capitalize!()
+puts "\n" + "Welcome #{name1} and #{name2} to the Game of War." + "\n" + "\n"
 
 # Makes new array called deck
 deck = Array.new([])
@@ -42,13 +42,13 @@ deck.shuffle!
 # puts deck[0]
 # puts deck_of_playing_cards[(deck[0])]
 
-# Deals cards to each player
-player1_hand = []
-player2_hand = []
+# Initial dealing of cards, 26 for each player
+hand1 = []
+hand2 = []
 
 26.times do
-    player1_hand.push(deck.pop)
-    player2_hand.push(deck.pop)
+    hand1.push(deck.pop)
+    hand2.push(deck.pop)
 end
 
 #puts "Deck after dealing is: " + deck.inspect + "\n" + "\n"
@@ -56,72 +56,101 @@ end
 # Wait for the spacebar key to be pressed
 require 'io/console'
 def wait_for_spacebar
-   puts "\n" + "Push spacebar for skirmish."
+   puts "Push spacebar for next skirmish."
    sleep 1 while $stdin.getch != " "
+   puts "\e[H\e[2J" # Clears screen
 end
 
-player1_discard_pile = []
-player2_discard_pile = []
-player1_spoils = []
-player2_spoils = []
+# Method for showing player hand, spoils, and discard pile
+discard_pile1 = []
+discard_pile2 = []
+spoils1 = []
+spoils2 = []
 
-def show_player_info(player_name, hand, spoils, discard_pile)
-    puts player_name.to_s + " hand: " + hand.inspect
-    puts player_name.to_s + " spoils: " + spoils.to_s + "\n" 
-    puts player_name.to_s + " discard pile: " + discard_pile.to_s + "\n" + "\n"
+def show_player_info(name, hand, discard_pile)
+    puts name.to_s + "'s hand: " + hand.inspect
+    #puts name.to_s + " spoils: " + spoils.to_s + "\n" 
+    puts name.to_s + "'s discard pile: " + discard_pile.to_s + "\n" + "\n"
 end
 
-show_player_info(player1_name, player1_hand, player1_spoils, player1_discard_pile)
-show_player_info(player2_name, player2_hand, player2_spoils, player2_discard_pile)
+# Combines and shuffles hand and discard piles when less than bounty count
+def shuffle_hand(hand, discard_pile, bounty_count) 
+    if hand.count < bounty_count
+    hand = hand + discard_pile
+    hand.shuffle!
+    puts "Hand and discard pile were combined and reshuffled: " + hand.inspect
+    end
+end
 
-until (player1_hand + player1_discard_pile).empty? or (player2_hand + player2_discard_pile).empty?
+
+
+# Shows initial hand and discard pile for each player at game start
+show_player_info(name1, hand1, discard_pile1)
+show_player_info(name2, hand2, discard_pile2)
+
+# Loop runs until one player runs out of cards
+until (hand1 + discard_pile1).empty? or (hand2 + discard_pile2).empty?
   
     wait_for_spacebar
     
-    player1_spoils = player1_hand.shift
-    player2_spoils = player2_hand.shift
-    
-    show_player_info(player1_name, player1_hand, player1_spoils, player1_discard_pile)
-    show_player_info(player2_name, player2_hand, player2_spoils, player2_discard_pile)
+    # Shows each players hand, spoils, and discard pile
+    #show_player_info(name1, hand1, spoils1, discard_pile1)
+    #show_player_info(name2, hand2, spoils2, discard_pile2)
     
     # Shows players' card number
-    #puts "Card number is " + deck_of_playing_cards[player1_hand[0]].to_s
+    #puts "Card number is " + deck_of_playing_cards[hand1[0]].to_s
     
     # Makes player skirmish
-    #player1_skirmish = deck_of_playing_cards[player1_hand[0]] %13
+    #player1_skirmish = deck_of_playing_cards[hand1[0]] %13
     
     # Shows mod value
     #puts "Card value (mod) is " + player1_skirmish.to_s + "\n" + "\n"
     
-    #puts "Card number is " + deck_of_playing_cards[player2_hand[0]].to_s
-    #player2_skirmish = deck_of_playing_cards[player2_hand[0]] %13
+    #puts "Card number is " + deck_of_playing_cards[hand2[0]].to_s
+    #player2_skirmish = deck_of_playing_cards[hand2[0]] %13
     #puts "Card value (mod) is " + player2_skirmish.to_s + "\n" + "\n"
     
-    # First skirmish and outputs winner
-      
-    if deck_of_playing_cards[player1_spoils] %13 > deck_of_playing_cards[player2_spoils] %13
-        puts player1_name.to_s + " wins this skirmish." + "\n"
-        player1_discard_pile.push(player1_spoils, player2_spoils)
-        #puts player1_name.to_s + " hand after skirmish: " + player1_hand.inspect
-        #puts player1_name.to_s + " discard pile: " + player1_discard_pile.to_s  
-        show_player_info(player1_name, player1_hand, player1_spoils, player1_discard_pile)
-        show_player_info(player2_name, player2_hand, player2_spoils, player2_discard_pile) 
+    # Skirmish and outputs winner 
+    
+    # Creates and shows each players' spoils
+    spoils1 = hand1.shift
+    puts name1.to_s + "'s" + " spoils: " + spoils1.to_s + "\n" 
+    spoils2 = hand2.shift
+    puts name2.to_s + "'s" + " spoils: " + spoils2.to_s + "\n" + "\n"
+  
+    if deck_of_playing_cards[spoils1] %13 > deck_of_playing_cards[spoils2] %13 # Player 1 wins
+        discard_pile1.push(spoils1, spoils2) # Adds both spoils to winner's hand
+        puts "* * * " + name1.to_s + " wins this skirmish. * * *\n\n" # Outputs winner name
+        show_player_info(name1, hand1, discard_pile1) # Shows winner's info
+        show_player_info(name2, hand2, discard_pile2) 
         
-    elsif deck_of_playing_cards[player2_spoils] %13 > deck_of_playing_cards[player1_spoils] %13
-        puts player2_name.to_s + " wins this skirmish." + "\n"
-        player2_discard_pile.push(player1_spoils, player2_spoils)
-        #puts player2_name.to_s + " hand after skirmish: " + player2_hand.inspect
-        #puts player2_name.to_s + " discard pile: " + player2_discard_pile.to_s 
-        show_player_info(player1_name, player1_hand, player1_spoils, player1_discard_pile)
-        show_player_info(player2_name, player2_hand, player2_spoils, player2_discard_pile) 
-    else
-        puts "This skirmish is a tie so it's time for a battle!"
+    elsif deck_of_playing_cards[spoils2] %13 > deck_of_playing_cards[spoils1] %13 # Player 2 wins
+        discard_pile2.push(spoils1, spoils2)
+        puts "* * * " + name2.to_s + " wins this skirmish. * * *\n\n" # Outputs winner name
+        show_player_info(name2, hand2, discard_pile2) 
+        show_player_info(name1, hand1, discard_pile1)
+        
+    else # Tie condition
+        puts "* * * " + name1.to_s + " and " + name2.to_s + "are going to battle! * * *\n\n" # Outputs it's a battle
+        show_player_info(name1, hand1, discard_pile1)
+        show_player_info(name2, hand2, discard_pile2) 
+
+        # Sets bounty count = 4 if both players have at least 4 cards between hand and discard pile
+        if hand1.count + discard_pile1.count > 4 && hand2.count + discard_pile2.count > 4 
+            bounty_count = 4
+        else
+            # Sets bounty count as sum of hand and discard pile for player with least cards
+            bounty_count = [hand1.count + discard_pile1.count, hand2.count + discard_pile2.count].min 
+        end
+        
+        # Combines and shuffles if hand and discard < bounty count
+        shuffle_hand(hand1, discard_pile1, bounty_count)
+        shuffle_hand(hand2, discard_pile2, bounty_count)   
+        puts bounty_count
     end
  
+ 
 end 
-
-
-
 
 
 
