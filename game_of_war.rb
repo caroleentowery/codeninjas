@@ -134,6 +134,38 @@ until (hand1 + discard_pile1).empty? or (hand2 + discard_pile2).empty?
 # Need to handle how to do another battle if needed
 # Need to add how to rehand if needed here
 
+# Caroleen
+#
+# What you want to do here is leverage methods.  By putting the 'skirmish' portion of this loop in a method
+# including the part of it that determines the winner, you will be able to call that skirmish method at the end
+# of a battle.
+#
+# So, it would look like this:
+# 
+# Skirmish Method (Called within the overall game loop)
+#     Inside skirmish method the following happens
+#        Deal a card from each player
+#        Determine the outcome (one of three outcomes)
+#            Outcome 1 - Player 1 wins, give player 1 the spoils
+#            Outcome 2 - Player 2 wins, give player 2 the spoils
+#            Outcome 3 - Battle, call a method that runs the battle (see below)
+# End Skirmish Method
+#
+# Battle Method (Called with skirmish method has outcome 3
+#     Inside battle method the following happens
+#         Deal three cards from each player
+#         Call Skirmish Method
+# End Battle Method
+#
+# See how the methods call each other?
+#
+# You will also want to look into using methods from some of the other checks you make,
+# such as determining the skirmish outcome and determining if a player has won.
+# 
+# Great job so far, keep it up.
+#
+# Keith
+
     end
 end 
 
