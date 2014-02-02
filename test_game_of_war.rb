@@ -1,8 +1,59 @@
 hand1 = [1,2,3,4,5,6,7]
-discard_pile1 = [5]     
+discard_pile1 = [8]     
+spoils1 = [9,10,11,12]  
+  
      
-hand2 = [7]
-discard_pile2 = [8, 9, 10, 11]  
+hand2 = [20,21,22, 23, 24]
+discard_pile2 = [21,22, 23, 24]  
+spoils2 = [25,26,27,28,29]
+
+a1 = [1,2]
+a2 = [3,4]
+
+a1.concat(a2)
+puts a1.inspect
+puts a2.inspect
+
+a1 = [1,2]
+a2 = [3,4]
+
+a1.push(a2)
+puts a1.inspect
+puts a2.inspect
+
+a1 = [1,2]
+a2 = [3,4]
+
+a1 << a2
+puts a1.inspect
+puts a2.inspect
+
+
+=begin
+bounty_count = 3
+
+
+spoils1.clear
+spoils2.clear
+
+      bounty_count.times do |n|
+          spoils1.push(hand1.shift)
+          spoils2.push(hand2.shift)
+      end
+      puts "spoils 1 = " + spoils1.inspect
+      puts "spoils 2 = " + spoils2.inspect
+      
+playing_card1 = 3
+playing_card2 = 4
+      
+      
+spoils1.push(playing_card1,playing_card2).concat(spoils2) 
+puts spoils1.inspect
+#spoils1 += spoils2
+      
+puts spoils1.inspect
+      
+=begin
 
 #combined = hand1 + hand2   
 #puts combined.inspect
@@ -59,7 +110,7 @@ hand2 = rehand(hand2, discard_pile2, bounty_count)
  
        
  # Checks if hand < bounty_count
-=begin  
+ 
 =end
  
 
