@@ -83,32 +83,68 @@ namespace GameofWar
 
         private static void Skirmish()
         {
+            // KD
+            // Okay, good job getting the code to work, but this method is HUGE!
+            // Let's see how we can refactor it
+            // 
+            // - Keith
+
             Console.Clear();
 
+            // KD Each place you have a comment describing what a section of code does, this is a good
+            // place to 'extract a method' that accomplishes the task described.
+            // If you name the method correctly, you can eliminate the need for comments -> then your
+            // code ends up being much 'cleaner'.  Let's call this refactoring "Extract Method"
+            
             // Takes first card from each player and makes it the player card
             int player1Card = player1Hand[0];
             player1Hand.RemoveAt(0);
             int player2Card = player2Hand[0];
             player2Hand.RemoveAt(0);
+
             Console.WriteLine(player1Name + " plays " + deckWithFaces[player1Card] + " and " + player2Name + " plays " + deckWithFaces[player2Card] + "\n\n");
-            // Adds player card to spoils
-            player1Spoils.Add(player1Card);
-            player2Spoils.Add(player2Card);
+            
+            // KD, here's an example of Extract Method
+            // The code you had before is shown below for reference
+
+            //// Adds player card to spoils
+            //player1Spoils.Add(player1Card);
+            //player2Spoils.Add(player2Card);
+
+            // KD, here's what we end of after refactoring
+            AddCardToSpoilsFromEachPlayer(player1Card, player2Card);
+            // KD, see how the code no longer needs a comment, as the method name tells us what it's doing.
+            // Also, notice the name doesn't tell us HOW it's doing it, only WHAT it's doing.
+            // If we want to know HOW the method is doing it, we'll look inside the method.
 
             // Shows player info before playing
             Console.WriteLine(player1Name + ":  Hand count: " + player1Hand.Count + " Discard count: " + player1Discard.Count + " Spoils: " + player1Spoils.Count);
             Console.WriteLine(player2Name + ":  Hand count: " + player2Hand.Count + " Discard count: " + player2Discard.Count + " Spoils: " + player2Spoils.Count + "\n");
 
-            if (player1Card % 13 > player2Card % 13) // Player 1 wins
-            {
-                player1Spoils.AddRange(player2Spoils); // Adds player 2 spoils to player 1 spoils
-                player2Spoils.Clear(); // Clears player 2 spoils                
-                Console.WriteLine(player1Name + " wins this skirmish and get spoils: " + player1Spoils.Count + ".\n\n");
-                player1Discard.AddRange(player1Spoils); // Addds total spoils to player 1 discard
 
-                Console.WriteLine(player1Name + ":  Hand count: " + player1Hand.Count + " Discard count: " + player1Discard.Count + " Score: " + (Convert.ToInt32(player1Hand.Count) + Convert.ToInt32(player1Discard.Count)));
-                Console.WriteLine(player2Name + ":  Hand count: " + player2Hand.Count + " Discard count: " + player2Discard.Count + " Score: " + (Convert.ToInt32(player2Hand.Count) + Convert.ToInt32(player2Discard.Count)));
-                player1Spoils.Clear(); // Clears player 1 spoils for next skirmish
+            // KD, okay here's another type of refactoring we can do.  We'll replace the 'conditional predicate'
+            // or 'the thing in the parentheses' with a method call.  We'll call this refactoring "Extract Method from
+            // Conditional Predicate".  I'll also refactor the code inside the if block into a method with our "Extract Method"
+            // refactoring.
+
+            // KD, again as before, the old code commented out
+
+            //if (player1Card % 13 > player2Card % 13) // Player 1 wins
+            //{
+            //    player1Spoils.AddRange(player2Spoils); // Adds player 2 spoils to player 1 spoils
+            //    player2Spoils.Clear(); // Clears player 2 spoils                
+            //    Console.WriteLine(player1Name + " wins this skirmish and get spoils: " + player1Spoils.Count + ".\n\n");
+            //    player1Discard.AddRange(player1Spoils); // Addds total spoils to player 1 discard
+
+            //    Console.WriteLine(player1Name + ":  Hand count: " + player1Hand.Count + " Discard count: " + player1Discard.Count + " Score: " + (Convert.ToInt32(player1Hand.Count) + Convert.ToInt32(player1Discard.Count)));
+            //    Console.WriteLine(player2Name + ":  Hand count: " + player2Hand.Count + " Discard count: " + player2Discard.Count + " Score: " + (Convert.ToInt32(player2Hand.Count) + Convert.ToInt32(player2Discard.Count)));
+            //    player1Spoils.Clear(); // Clears player 1 spoils for next skirmish
+            //}
+
+            // KD, and here's the new code.  Isn't that a thing of beauty?
+            if (IsPlayer1TheWinner(player1Card, player2Card))
+            {
+                AwardPlayer1Spoils();
             }
 
             else if (player1Card % 13 < player2Card % 13) // Player 2 wins
@@ -170,12 +206,34 @@ namespace GameofWar
             }
         }
 
+        private static void AwardPlayer1Spoils()
+        {
+            player1Spoils.AddRange(player2Spoils); // Adds player 2 spoils to player 1 spoils
+            player2Spoils.Clear(); // Clears player 2 spoils                
+            Console.WriteLine(player1Name + " wins this skirmish and get spoils: " + player1Spoils.Count + ".\n\n");
+            player1Discard.AddRange(player1Spoils); // Addds total spoils to player 1 discard
+
+            Console.WriteLine(player1Name + ":  Hand count: " + player1Hand.Count + " Discard count: " + player1Discard.Count + " Score: " + (Convert.ToInt32(player1Hand.Count) + Convert.ToInt32(player1Discard.Count)));
+            Console.WriteLine(player2Name + ":  Hand count: " + player2Hand.Count + " Discard count: " + player2Discard.Count + " Score: " + (Convert.ToInt32(player2Hand.Count) + Convert.ToInt32(player2Discard.Count)));
+            player1Spoils.Clear(); // Clears player 1 spoils for next skirmish
+        }
+
+        private static bool IsPlayer1TheWinner(int player1Card, int player2Card)
+        {
+            return player1Card % 13 > player2Card % 13;
+        }
+
+        private static void AddCardToSpoilsFromEachPlayer(int player1Card, int player2Card)
+        {
+            player1Spoils.Add(player1Card);
+            player2Spoils.Add(player2Card);
+        }
+
         private static void Initialization() // Keith did this so I could use ToTitleCase method
         {
             CultureInfo cultureInfo = CultureInfo.CurrentCulture;
             textInfo = cultureInfo.TextInfo;
         }
-
 
         private static void GetPlayerNames()
         {
