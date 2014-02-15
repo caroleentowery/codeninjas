@@ -22,9 +22,7 @@ namespace GameofWar
         static List<int> player2Spoils = new List<int>();
         static List<int> player2Discard = new List<int>(0);
 
-
         static List<string> deckWithFaces;
-
         static int bountyCount;
         
         #endregion
@@ -32,7 +30,7 @@ namespace GameofWar
         static void Main()
         {
             // Initial setup of play session
-            Initialization();
+            Initialization(); // Keith did this for capitalization of names
             GetPlayerNames();
             GetDeck();
             ShuffleDeck(deck);
@@ -42,191 +40,23 @@ namespace GameofWar
             DealCards();
 
             // Play actual game
-            // Keeps playing while both players still have cards
-            while ((Convert.ToInt32(player1Hand.Count) + Convert.ToInt32(player1Discard.Count)) != 0 && (Convert.ToInt32(player2Hand.Count) + Convert.ToInt32(player2Discard.Count)) != 0)
+            while (DoBothPlayersStillHaveCards())
             {
                 Pause();
                 Skirmish();
 
-                // Checks if hand is empty but discard still has cards, if so, then combines and reshuffles 
-                if (Convert.ToInt32(player1Hand.Count) == 0 && Convert.ToInt32(player1Discard.Count) != 0)
+                if (IsPlayer1HandEmptyButStillHasDiscardCards())
                 {
-                    player1Hand.AddRange(player1Discard); // Combines hand and discard pile
-                    player1Discard.Clear(); // Empties discard pile
-                    ShuffleDeck(player1Hand); // Shuffles combined hand and discard pile
-                    Console.WriteLine("\n\n" + player1Name + "'s hand and discard pile will be combined and reshuffled.");
+                    ReshufflePlayer1HandandDiscard();
                 }
 
-                if (Convert.ToInt32(player2Hand.Count) == 0 && Convert.ToInt32(player2Discard.Count) != 0)
+                if (IsPlayerHand2EmptyButStillHasDiscardCards())
                 {
-                    player2Hand.AddRange(player2Discard); // Combines hand and discard pile
-                    player2Discard.Clear(); // Empties discard pile
-                    ShuffleDeck(player2Hand); // Shuffles combined hand and discard pile
-                    Console.WriteLine("\n\n" + player2Name + "'s hand and discard pile will be combined and reshuffled.");
+                    ReshufflePlayer2HandandDiscard();
                 }
             }
-
-            // Writes winner's name when one player runs out of cards
-            if (Convert.ToInt32(player1Hand.Count) + Convert.ToInt32(player1Discard.Count) == 0) 
-            {
-                Console.WriteLine("\n\n" + player2Name + " is the winner because " + player1Name + " ran out of cards.");
-            }
-
-            if (Convert.ToInt32(player2Hand.Count) + Convert.ToInt32(player2Discard.Count) == 0)
-            {
-                Console.WriteLine("\n\n" + player1Name + " is the winner because " + player2Name + " ran out of cards.");
-            }
-
+            DeterminesAndPrintsWinner();
             Pause();
-
-        }
-
-        private static void Skirmish()
-        {
-            // KD
-            // Okay, good job getting the code to work, but this method is HUGE!
-            // Let's see how we can refactor it
-            // 
-            // - Keith
-
-            Console.Clear();
-
-            // KD Each place you have a comment describing what a section of code does, this is a good
-            // place to 'extract a method' that accomplishes the task described.
-            // If you name the method correctly, you can eliminate the need for comments -> then your
-            // code ends up being much 'cleaner'.  Let's call this refactoring "Extract Method"
-            
-            // Takes first card from each player and makes it the player card
-            int player1Card = player1Hand[0];
-            player1Hand.RemoveAt(0);
-            int player2Card = player2Hand[0];
-            player2Hand.RemoveAt(0);
-
-            Console.WriteLine(player1Name + " plays " + deckWithFaces[player1Card] + " and " + player2Name + " plays " + deckWithFaces[player2Card] + "\n\n");
-            
-            // KD, here's an example of Extract Method
-            // The code you had before is shown below for reference
-
-            //// Adds player card to spoils
-            //player1Spoils.Add(player1Card);
-            //player2Spoils.Add(player2Card);
-
-            // KD, here's what we end of after refactoring
-            AddCardToSpoilsFromEachPlayer(player1Card, player2Card);
-            // KD, see how the code no longer needs a comment, as the method name tells us what it's doing.
-            // Also, notice the name doesn't tell us HOW it's doing it, only WHAT it's doing.
-            // If we want to know HOW the method is doing it, we'll look inside the method.
-
-            // Shows player info before playing
-            Console.WriteLine(player1Name + ":  Hand count: " + player1Hand.Count + " Discard count: " + player1Discard.Count + " Spoils: " + player1Spoils.Count);
-            Console.WriteLine(player2Name + ":  Hand count: " + player2Hand.Count + " Discard count: " + player2Discard.Count + " Spoils: " + player2Spoils.Count + "\n");
-
-
-            // KD, okay here's another type of refactoring we can do.  We'll replace the 'conditional predicate'
-            // or 'the thing in the parentheses' with a method call.  We'll call this refactoring "Extract Method from
-            // Conditional Predicate".  I'll also refactor the code inside the if block into a method with our "Extract Method"
-            // refactoring.
-
-            // KD, again as before, the old code commented out
-
-            //if (player1Card % 13 > player2Card % 13) // Player 1 wins
-            //{
-            //    player1Spoils.AddRange(player2Spoils); // Adds player 2 spoils to player 1 spoils
-            //    player2Spoils.Clear(); // Clears player 2 spoils                
-            //    Console.WriteLine(player1Name + " wins this skirmish and get spoils: " + player1Spoils.Count + ".\n\n");
-            //    player1Discard.AddRange(player1Spoils); // Addds total spoils to player 1 discard
-
-            //    Console.WriteLine(player1Name + ":  Hand count: " + player1Hand.Count + " Discard count: " + player1Discard.Count + " Score: " + (Convert.ToInt32(player1Hand.Count) + Convert.ToInt32(player1Discard.Count)));
-            //    Console.WriteLine(player2Name + ":  Hand count: " + player2Hand.Count + " Discard count: " + player2Discard.Count + " Score: " + (Convert.ToInt32(player2Hand.Count) + Convert.ToInt32(player2Discard.Count)));
-            //    player1Spoils.Clear(); // Clears player 1 spoils for next skirmish
-            //}
-
-            // KD, and here's the new code.  Isn't that a thing of beauty?
-            if (IsPlayer1TheWinner(player1Card, player2Card))
-            {
-                AwardPlayer1Spoils();
-            }
-
-            else if (player1Card % 13 < player2Card % 13) // Player 2 wins
-            {
-                player2Spoils.AddRange(player1Spoils); // Adds player 1 spoils to player 2 spoils
-                player1Spoils.Clear(); // Clears player 1 spoils
-                Console.WriteLine(player2Name + " wins this skirmish and get spoils: " + player2Spoils.Count + ".\n\n");
-                player2Discard.AddRange(player2Spoils); // Addds total spoils to player 2 discard
-
-                Console.WriteLine(player1Name + ":  Hand count: " + player1Hand.Count + " Discard count: " + player1Discard.Count + " Score: " + (Convert.ToInt32(player1Hand.Count) + Convert.ToInt32(player1Discard.Count)));
-                Console.WriteLine(player2Name + ":  Hand count: " + player2Hand.Count + " Discard count: " + player2Discard.Count + " Score: " + (Convert.ToInt32(player2Hand.Count) + Convert.ToInt32(player2Discard.Count)));
-                player2Spoils.Clear();
-            }
-
-            else if (player1Card % 13 == player2Card % 13) // Players tie, could use just else without condition
-            {
-                // Sets bounty count
-                if ((Convert.ToInt32(player1Hand.Count) + Convert.ToInt32(player1Discard.Count) > 4) && (Convert.ToInt32(player2Hand.Count) + Convert.ToInt32(player2Discard.Count) > 4))
-                {
-                    bountyCount = 3; // Sets 3 if have minimum of 4 cards, subtracted 1 for playing card
-                }
-                else // Sets bounty count as sum of hand and discard pile minus one for player with least cards
-                {
-                    bountyCount = Math.Min((Convert.ToInt32(player1Hand.Count) + Convert.ToInt32(player1Discard.Count)), (Convert.ToInt32(player2Hand.Count) + Convert.ToInt32(player2Discard.Count))) - 1;
-                }
-
-                // Checks each player's hand to see if need to combine hand and discard then reshuffle
-                if (player1Hand.Count < bountyCount)
-                {
-                    player1Hand.AddRange(player1Discard); // Combines hand and discard pile
-                    player1Discard.Clear(); // Empties discard pile
-                    ShuffleDeck(player1Hand); // Shuffles combined hand and discard pile
-                    Console.WriteLine("\n\n" + player1Name + "'s hand and discard pile will be combined and reshuffled to complete the battle." + "\n\n");
-                }
-                if (player2Hand.Count < bountyCount)
-                {
-                    player2Hand.AddRange(player2Discard);
-                    player2Discard.Clear();
-                    ShuffleDeck(player2Hand);
-                    Console.WriteLine("\n\n" + player2Name + "'s hand and discard pile will be combined and reshuffled to complete the battle." + "\n\n");
-                }
-
-                Console.WriteLine(player1Name + " and " + player2Name + " are going to battle with bounty count: " + bountyCount + "\n\n");
-
-                // Adds player cards to spoils up to bounty count
-                for (int i = 0; i < bountyCount; i++)
-                {
-                    player1Card = player1Hand[0]; // Makes first card from hand the playing card
-                    player1Hand.RemoveAt(0); // Removes first card from hand
-                    player1Spoils.Add(player1Card); // Adds that first card into spoils
-                    player2Card = player2Hand[0];
-                    player2Hand.RemoveAt(0);
-                    player2Spoils.Add(player2Card);
-                }
-
-                // Shows after battle info
-                Console.WriteLine(player1Name + ":  Hand count: " + player1Hand.Count + " Discard count: " + player1Discard.Count + " Spoils: " + player1Spoils.Count);
-                Console.WriteLine(player2Name + ":  Hand count: " + player2Hand.Count + " Discard count: " + player2Discard.Count + " Spoils: " + player2Spoils.Count + "\n");
-            }
-        }
-
-        private static void AwardPlayer1Spoils()
-        {
-            player1Spoils.AddRange(player2Spoils); // Adds player 2 spoils to player 1 spoils
-            player2Spoils.Clear(); // Clears player 2 spoils                
-            Console.WriteLine(player1Name + " wins this skirmish and get spoils: " + player1Spoils.Count + ".\n\n");
-            player1Discard.AddRange(player1Spoils); // Addds total spoils to player 1 discard
-
-            Console.WriteLine(player1Name + ":  Hand count: " + player1Hand.Count + " Discard count: " + player1Discard.Count + " Score: " + (Convert.ToInt32(player1Hand.Count) + Convert.ToInt32(player1Discard.Count)));
-            Console.WriteLine(player2Name + ":  Hand count: " + player2Hand.Count + " Discard count: " + player2Discard.Count + " Score: " + (Convert.ToInt32(player2Hand.Count) + Convert.ToInt32(player2Discard.Count)));
-            player1Spoils.Clear(); // Clears player 1 spoils for next skirmish
-        }
-
-        private static bool IsPlayer1TheWinner(int player1Card, int player2Card)
-        {
-            return player1Card % 13 > player2Card % 13;
-        }
-
-        private static void AddCardToSpoilsFromEachPlayer(int player1Card, int player2Card)
-        {
-            player1Spoils.Add(player1Card);
-            player2Spoils.Add(player2Card);
         }
 
         private static void Initialization() // Keith did this so I could use ToTitleCase method
@@ -267,6 +97,23 @@ namespace GameofWar
             }
         }
 
+        private static List<string> BuildDeckWithDisplayValues() // Creates initial deck with faces like 3H or 2D
+        {
+            deckWithFaces = new List<string>();
+            var rank1 = new List<string> { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" };
+            // Had to use var as generic term for list of characters
+            var suit1 = new List<char> { '\u0005', '\u0004', '\u0003', '\u0006' }; // 5 = clubs, 4 = diamonds, 3 = hearts, 6 = spades
+
+            foreach (var s in suit1) // Builds deck with rank and suit
+            {
+                foreach (var r in rank1)
+                {
+                    deckWithFaces.Add(r + s); // Adds cards with rank and suit to list
+                }
+            }
+            return deckWithFaces;
+        }
+
         private static void DealCards() // Deals each player half the deck
         {
             for (int i = 0; i < 26; i++)
@@ -277,30 +124,187 @@ namespace GameofWar
             deck.Clear();
         }
 
+        private static bool DoBothPlayersStillHaveCards()
+        {
+            return (Convert.ToInt32(player1Hand.Count) + Convert.ToInt32(player1Discard.Count)) != 0 && (Convert.ToInt32(player2Hand.Count) + Convert.ToInt32(player2Discard.Count)) != 0;
+        }
+
+        private static void Pause()
+        {
+            //Console.WriteLine("\n");
+            Console.WriteLine("\n\n" + "Press any key to continue ..." + "\n\n");
+            Console.ReadKey(true); // Set to true so it won't display the key entered
+        }
+
+        private static void Skirmish()
+        {
+            Console.Clear();
+
+            // Takes first card from each player and makes it the player card
+            int player1Card = player1Hand[0];
+            player1Hand.RemoveAt(0);
+            int player2Card = player2Hand[0];
+            player2Hand.RemoveAt(0);
+
+            Console.WriteLine(player1Name + " plays " + deckWithFaces[player1Card] + " and " + player2Name + " plays " + deckWithFaces[player2Card] + "\n\n");
+
+            AddCardToSpoilsFromEachPlayer(player1Card, player2Card); // Method name tells WHAT not HOW, look in method for HOW
+            PrintEachPlayersHandDiscardSpoilsCount();
+
+            if (IsPlayer1TheWinner(player1Card, player2Card)) // Thing in ( ) is called conditional predicate
+            {
+                AwardPlayer1Spoils();
+            }
+
+            else if (IsPlayer2TheWinner(player1Card, player2Card))
+            {
+                AwardPlayer2Spoils();
+            }
+
+            else if (DoPlayersTie(player1Card, player2Card))
+            {
+                SetBountyCount();
+
+                if (player1Hand.Count < bountyCount)
+                {
+                    ReshufflePlayer1HandandDiscard();
+                }
+
+                if (player2Hand.Count < bountyCount)
+                {
+                    ReshufflePlayer2HandandDiscard();
+                }
+
+                AddSpoilsToBothPlayersForBattle(ref player1Card, ref player2Card);
+
+                Console.WriteLine(player1Name + " and " + player2Name + " are going to battle with bounty count: " + bountyCount + "\n\n");
+                PrintEachPlayersHandDiscardSpoilsCount();
+
+            }
+        }
+
+        private static void AddCardToSpoilsFromEachPlayer(int player1Card, int player2Card)
+        {
+            player1Spoils.Add(player1Card);
+            player2Spoils.Add(player2Card);
+        }
+
+        private static bool IsPlayer1TheWinner(int player1Card, int player2Card)
+        {
+            return player1Card % 13 > player2Card % 13;
+        }
+
+        private static bool IsPlayer2TheWinner(int player1Card, int player2Card)
+        {
+            return player1Card % 13 < player2Card % 13;
+        }
+
+        private static bool DoPlayersTie(int player1Card, int player2Card)
+        {
+            return player1Card % 13 == player2Card % 13;
+        }
+
+        private static void DeterminesAndPrintsWinner()
+        {
+            if (Convert.ToInt32(player1Hand.Count) + Convert.ToInt32(player1Discard.Count) == 0)
+            {
+                Console.WriteLine("\n\n" + player2Name + " is the winner because " + player1Name + " ran out of cards.");
+            }
+
+            if (Convert.ToInt32(player2Hand.Count) + Convert.ToInt32(player2Discard.Count) == 0)
+            {
+                Console.WriteLine("\n\n" + player1Name + " is the winner because " + player2Name + " ran out of cards.");
+            }
+        }
+
+        private static bool IsPlayer1HandEmptyButStillHasDiscardCards()
+        {
+            return Convert.ToInt32(player1Hand.Count) == 0 && Convert.ToInt32(player1Discard.Count) != 0;
+        }
+
+        private static bool IsPlayerHand2EmptyButStillHasDiscardCards()
+        {
+            return Convert.ToInt32(player2Hand.Count) == 0 && Convert.ToInt32(player2Discard.Count) != 0;
+        }
+
+        private static void ReshufflePlayer1HandandDiscard() // How do I use this method for both player1 and player2?
+        {
+            player1Hand.AddRange(player1Discard); // Combines hand and discard pile
+            player1Discard.Clear(); // Empties discard pile
+            ShuffleDeck(player1Hand); // Shuffles combined hand and discard pile
+            Console.WriteLine("\n\n" + player1Name + "'s hand and discard pile will be combined and reshuffled." + "\n\n");
+        }
+
+        private static void ReshufflePlayer2HandandDiscard()
+        {
+            player2Hand.AddRange(player2Discard);
+            player2Discard.Clear();
+            ShuffleDeck(player2Hand);
+            Console.WriteLine("\n\n" + player2Name + "'s hand and discard pile will be combined and reshuffled." + "\n\n");
+        }
+
+        private static void PrintEachPlayersHandDiscardSpoilsCount()
+        {
+            Console.WriteLine(player1Name + ":  Hand count: " + player1Hand.Count + " Discard count: " + player1Discard.Count + " Spoils: " + player1Spoils.Count);
+            Console.WriteLine(player2Name + ":  Hand count: " + player2Hand.Count + " Discard count: " + player2Discard.Count + " Spoils: " + player2Spoils.Count + "\n");
+        }
+
+        private static void AddSpoilsToBothPlayersForBattle(ref int player1Card, ref int player2Card)
+        {
+            for (int i = 0; i < bountyCount; i++)
+            {
+                player1Card = player1Hand[0]; // Makes first card from hand the playing card
+                player1Hand.RemoveAt(0); // Removes first card from hand
+                player1Spoils.Add(player1Card); // Adds that first card into spoils
+                player2Card = player2Hand[0];
+                player2Hand.RemoveAt(0);
+                player2Spoils.Add(player2Card);
+            }
+        }
+
+        private static void SetBountyCount()
+        {
+            if ((Convert.ToInt32(player1Hand.Count) + Convert.ToInt32(player1Discard.Count) > 4) && (Convert.ToInt32(player2Hand.Count) + Convert.ToInt32(player2Discard.Count) > 4))
+            {
+                bountyCount = 3; // Sets 3 if have minimum of 4 cards, subtracted 1 for playing card
+            }
+            else // Sets bounty count as sum of hand and discard pile minus one for player with least cards
+            {
+                bountyCount = Math.Min((Convert.ToInt32(player1Hand.Count) + Convert.ToInt32(player1Discard.Count)), (Convert.ToInt32(player2Hand.Count) + Convert.ToInt32(player2Discard.Count))) - 1;
+            }
+        }
+
+        private static void AwardPlayer2Spoils()
+        {
+            player2Spoils.AddRange(player1Spoils); // Adds player 1 spoils to player 2 spoils
+            player1Spoils.Clear(); // Clears player 1 spoils
+            Console.WriteLine(player2Name + " wins this skirmish and get spoils: " + player2Spoils.Count + ".\n\n");
+            player2Discard.AddRange(player2Spoils); // Addds total spoils to player 2 discard
+
+            Console.WriteLine(player1Name + ":  Hand count: " + player1Hand.Count + " Discard count: " + player1Discard.Count + " Score: " + (Convert.ToInt32(player1Hand.Count) + Convert.ToInt32(player1Discard.Count)));
+            Console.WriteLine(player2Name + ":  Hand count: " + player2Hand.Count + " Discard count: " + player2Discard.Count + " Score: " + (Convert.ToInt32(player2Hand.Count) + Convert.ToInt32(player2Discard.Count)));
+            player2Spoils.Clear();
+        }
+
+        private static void AwardPlayer1Spoils()
+        {
+            player1Spoils.AddRange(player2Spoils); // Adds player 2 spoils to player 1 spoils
+            player2Spoils.Clear(); // Clears player 2 spoils                
+            Console.WriteLine(player1Name + " wins this skirmish and get spoils: " + player1Spoils.Count + ".\n\n");
+            player1Discard.AddRange(player1Spoils); // Addds total spoils to player 1 discard
+
+            Console.WriteLine(player1Name + ":  Hand count: " + player1Hand.Count + " Discard count: " + player1Discard.Count + " Score: " + (Convert.ToInt32(player1Hand.Count) + Convert.ToInt32(player1Discard.Count)));
+            Console.WriteLine(player2Name + ":  Hand count: " + player2Hand.Count + " Discard count: " + player2Discard.Count + " Score: " + (Convert.ToInt32(player2Hand.Count) + Convert.ToInt32(player2Discard.Count)));
+            player1Spoils.Clear(); // Clears player 1 spoils for next skirmish
+        }
+
         private static void PrintCard(int card) // Prints the card from deckWithFaces
         {
-
             //deckWithFaces.ForEach(Console.WriteLine); // Writes rank and suit of 52 cards
             Console.WriteLine(deckWithFaces[card]); // Accesses card from deckWithFaces by card index
         }
 
-        private static List<string> BuildDeckWithDisplayValues() // Creates initial deck with faces like 3H or 2D
-        {
-            deckWithFaces = new List<string>();
-            List<string> rank1 = new List<string> { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" };
-            List<string> suit1 = new List<string> { "S", "H", "D", "C" };
-
-            foreach (string s in suit1) // Builds deck with rank and suit
-            {
-                foreach (string r in rank1)
-                {
-                    deckWithFaces.Add(r + s); // Adds cards with rank and suit to list
-                }
-            }
-            return deckWithFaces;
-        }
-
-        private static void PrintPlayersHands() // Don't call this anymore, skipping printing players hands at first
+        private static void PrintPlayersHands() // Not using this now, skipping printing players hands at first
         {
             Console.Clear();
             Console.WriteLine("Player 1's hand");
@@ -318,12 +322,7 @@ namespace GameofWar
             }
         }
 
-        private static void Pause()
-        {
-            //Console.WriteLine("\n");
-            Console.WriteLine("\n\n" + "Press any key to continue ..." + "\n\n");
-            Console.ReadKey(true); // Set to true so it won't display the key entered
-        }
+
     }
 }
   
