@@ -9,6 +9,9 @@ namespace Towery.GameOfWar
     {
         // Fields
         private string _playerName;
+        private Cards _hand = new Cards();
+        private Cards _spoils = new Cards();
+        private Cards _discard = new Cards();
 
         // Properties
         public string PlayerName 
@@ -17,11 +20,25 @@ namespace Towery.GameOfWar
             set { _playerName = value; }
         }
 
-        // Constructor
-        public Player(string _playerName)
+        public Cards Hand
         {
-            this._playerName = _playerName;
+            get { return _hand; }
+            set { _hand = value; }
         }
+
+        public Cards Spoils
+        {
+            get { return _spoils; }
+            set { _spoils = value; }
+        }
+
+        public Cards Discard
+        {
+            get { return _discard; }
+            set { _discard = value; }
+        }
+        // Constructor
+
 
     }
 }

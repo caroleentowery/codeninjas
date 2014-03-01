@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Card.cs" />
     <Compile Include="Cards.cs" />
+    <Compile Include="GameOfWar.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

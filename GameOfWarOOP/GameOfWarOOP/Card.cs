@@ -7,26 +7,34 @@ namespace Towery.GameOfWar
 {
     public class Card
     {
-        private readonly int _cardIndex;
-        private List<string> deckWithFaces;
-        private string _displayCard;
-
-        public Card(int cardIndex) // Constructor
-        {
-            _cardIndex = cardIndex;
-        }
+        private int _rankNumber;
+        private int _suitNumber;
 
         #region Properties
 
-        public int CardIndex 
+        public int RankNumber // public are Pascal case
         {
-            get { return _cardIndex; }
+            get { return _rankNumber; }
         }
+
+        public string Name
+        {
+            get { return this.ToString(); } // Run the ToString for this class (not an inherited one)
+        }
+
 
         #endregion
 
-        #region Methods
+        public Card(int rankNumber, int suitNumber) // Constructor
+        {
+            _rankNumber = rankNumber;
+            _suitNumber = suitNumber;
+        }
 
+
+
+        #region Methods
+        /*
         public override string ToString() // Use this over a method bc 
         {
             deckWithFaces = new List<string>();  // Creates initial deck with faces like 3H or 2D
@@ -45,6 +53,7 @@ namespace Towery.GameOfWar
         }
 
         #endregion
+         */
 
     }
 }
