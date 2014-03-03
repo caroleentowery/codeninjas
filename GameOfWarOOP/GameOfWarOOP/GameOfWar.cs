@@ -12,6 +12,8 @@ namespace Towery.GameOfWar
         string player2Name;
         static TextInfo textInfo;
         Cards deck;
+
+
         
         private void GetPlayerNames()
         {
@@ -30,12 +32,14 @@ namespace Towery.GameOfWar
             textInfo = cultureInfo.TextInfo;
         }
 
+
+
         private void GetDeck() // Creates deck per card values 0 - 51
         {
             deck = new Cards();
             for (int i = 0; i < 52; i++)
             {
-                deck.Add(i);
+                // deck.Add(i);
             }
         }
 

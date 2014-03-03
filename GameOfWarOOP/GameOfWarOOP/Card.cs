@@ -9,6 +9,7 @@ namespace Towery.GameOfWar
     {
         private int _rankNumber;
         private int _suitNumber;
+        private string _rankDisplay;
 
         #region Properties
 
@@ -22,7 +23,6 @@ namespace Towery.GameOfWar
             get { return this.ToString(); } // Run the ToString for this class (not an inherited one)
         }
 
-
         #endregion
 
         public Card(int rankNumber, int suitNumber) // Constructor
@@ -32,28 +32,53 @@ namespace Towery.GameOfWar
         }
 
 
-
         #region Methods
-        /*
-        public override string ToString() // Use this over a method bc 
-        {
-            deckWithFaces = new List<string>();  // Creates initial deck with faces like 3H or 2D
-            var rank = new List<string> { "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" };
-            // Had to use var as generic term for list of characters
-            var suit = new List<char> { '\u0005', '\u0004', '\u0003', '\u0006' }; // 5 = clubs, 4 = diamonds, 3 = hearts, 6 = spades
 
-            foreach (var s in suit) // Builds deck with rank and suit
+        public override string ToString() 
+        {
+            if (_rankNumber <= 8)
+                return (_rankNumber + 2).ToString();
+            else
             {
-                foreach (var r in rank)
+                switch (_rankNumber)
                 {
-                    deckWithFaces.Add(r + s); // Adds cards with rank and suit to list
+                    case 9:
+                        return "J";
+                        break;
+                    case 10:
+                        return "Q";
+                        break;
+                    case 11:
+                        return "K";
+                        break;
+                    case 12:
+                        return "A";
+                        break;
                 }
             }
-            return deckWithFaces[_cardIndex];
+
+             switch (_suitNumber)
+             {
+                 case 0:
+                     return "Clubs"; // char '\u0005'
+                     break;
+                 case 1:
+                     return "Diamonds"; // char '\u0006';
+                     break;
+                 case 2:
+                     return "Hearts"; // char '\u0007';
+                     break;
+                 case 3:
+                     return "Spades"; // char '\u0008';
+                     break;
+             }
+
+            return _rankNumber + " of " + _suitNumber;
         }
 
         #endregion
-         */
+
+
 
     }
 }
