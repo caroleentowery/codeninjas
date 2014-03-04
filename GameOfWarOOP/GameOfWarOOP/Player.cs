@@ -37,7 +37,6 @@ namespace Towery.GameOfWar
             get { return _discard; }
             set { _discard = value; }
         }
-        // Constructor
 
 
     }

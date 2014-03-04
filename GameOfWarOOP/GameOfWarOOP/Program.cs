@@ -10,18 +10,15 @@ namespace ConsoleApplication1
     {
         static void Main(string[] args)
         {
-            Card test = new Card(1, 3);
-            Console.ReadLine();
+            GameOfWar testGame = new GameOfWar();
+            testGame.PlayGame();
 
-            //Card myCard = new Card(0,1);
-            //Cards myCards = new Cards();
-            //myCards.Add(myCard);
-            //Console.WriteLine(myCards.Count);
-            //myCards.Remove(myCard);
-            //Console.WriteLine(myCards.Count);
-            //Console.WriteLine(myCard.ToString());
-            //Console.WriteLine(myCard.CardIndex);
-            //Console.ReadLine();
+            //Card test = new Card(1, 1);
+            //Card test1 = new Card(1, 1);
+            //Card test2 = new Card(1, 1);
+            //Card test3 = new Card(1, 1);// creates new Card object named "test"
+            //Console.WriteLine(test.ToString());
+            //Console.ReadKey();
         }
     }
 }

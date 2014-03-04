@@ -8,22 +8,34 @@ namespace Towery.GameOfWar
 {
     class GameOfWar
     {
-        string player1Name;
-        string player2Name;
         static TextInfo textInfo;
         Cards deck;
 
+        Player player1 = new Player();
+        Player player2 = new Player();
 
+        public void PlayGame()
+        {
+            // Where I'm testing
+            Card test = new Card(1, 3); // creates new Card object named "test"
+            Console.WriteLine(test.ToString());
+
+
+            Initialization();
+            GetPlayerNames();
+            Console.Write("Welcome " + player1.PlayerName + " and " + player2.PlayerName + " to the Game of War.");
+            Console.ReadKey();
+        }
         
         private void GetPlayerNames()
         {
             Console.WriteLine("Enter a name for player 1");
-            player1Name = textInfo.ToTitleCase(Console.ReadLine());
+            player1.PlayerName = textInfo.ToTitleCase(Console.ReadLine());
 
             Console.WriteLine("Enter a name for player 2");
-            player2Name = textInfo.ToTitleCase(Console.ReadLine());
+            player2.PlayerName = textInfo.ToTitleCase(Console.ReadLine());
 
-            Console.Write("Welcome " + player1Name + " and " + player2Name + " to the Game of War.");
+            
         }
 
         private void Initialization() // Keith did this so I could use ToTitleCase method

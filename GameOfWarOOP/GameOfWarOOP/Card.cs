@@ -9,7 +9,6 @@ namespace Towery.GameOfWar
     {
         private int _rankNumber;
         private int _suitNumber;
-        private string _rankDisplay;
 
         #region Properties
 
@@ -36,23 +35,29 @@ namespace Towery.GameOfWar
 
         public override string ToString() 
         {
+            string rankSymbol = string.Empty; // Declare empty variable
+            string suitSymbol = string.Empty;
+
             if (_rankNumber <= 8)
-                return (_rankNumber + 2).ToString();
+            {
+                rankSymbol = (_rankNumber + 2).ToString();
+            }
+
             else
             {
                 switch (_rankNumber)
                 {
                     case 9:
-                        return "J";
+                        rankSymbol = "J";
                         break;
                     case 10:
-                        return "Q";
+                        rankSymbol = "Q";
                         break;
                     case 11:
-                        return "K";
+                        rankSymbol = "K";
                         break;
                     case 12:
-                        return "A";
+                        rankSymbol = "A";
                         break;
                 }
             }
@@ -60,20 +65,20 @@ namespace Towery.GameOfWar
              switch (_suitNumber)
              {
                  case 0:
-                     return "Clubs"; // char '\u0005'
+                     suitSymbol = ((char)3).ToString(); // Heart
                      break;
                  case 1:
-                     return "Diamonds"; // char '\u0006';
+                     suitSymbol = ((char)4).ToString(); // Diamond
                      break;
                  case 2:
-                     return "Hearts"; // char '\u0007';
+                     suitSymbol = ((char)5).ToString(); // Spade
                      break;
                  case 3:
-                     return "Spades"; // char '\u0008';
+                     suitSymbol = ((char)6).ToString(); // Clubs
                      break;
              }
 
-            return _rankNumber + " of " + _suitNumber;
+            return rankSymbol + " of " + suitSymbol; // shows 3 of heart symbol
         }
 
         #endregion
