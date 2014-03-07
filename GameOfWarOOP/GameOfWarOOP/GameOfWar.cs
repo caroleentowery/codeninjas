@@ -16,15 +16,26 @@ namespace Towery.GameOfWar
 
         public void PlayGame()
         {
-            // Where I'm testing
-            Card test = new Card(1, 3); // creates new Card object named "test"
-            Console.WriteLine(test.ToString());
-
+             //Testing returning card values
+             Card test = new Card(48); // creates new Card object named "test"
+             Console.WriteLine(test.ToString());
 
             Initialization();
             GetPlayerNames();
             Console.Write("Welcome " + player1.PlayerName + " and " + player2.PlayerName + " to the Game of War.");
+
+
+            Cards deck = new Cards();
+            //deck.Add(1);
+            Console.WriteLine(deck);
+
             Console.ReadKey();
+
+            //for (int i = 0; i < 52; i++)
+            //    {
+            //        deck.Add(i);
+            //    }
+
         }
         
         private void GetPlayerNames()

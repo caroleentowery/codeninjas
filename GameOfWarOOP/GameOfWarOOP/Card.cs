@@ -7,14 +7,15 @@ namespace Towery.GameOfWar
 {
     public class Card
     {
+        private int _cardIndex;
         private int _rankNumber;
         private int _suitNumber;
 
         #region Properties
 
-        public int RankNumber // public are Pascal case
+        public int CardIndex // public are Pascal case
         {
-            get { return _rankNumber; }
+            get { return _cardIndex; }
         }
 
         public string Name
@@ -24,17 +25,19 @@ namespace Towery.GameOfWar
 
         #endregion
 
-        public Card(int rankNumber, int suitNumber) // Constructor
+        public Card(int cardIndex) // constructor
         {
-            _rankNumber = rankNumber;
-            _suitNumber = suitNumber;
+            _cardIndex = cardIndex;
         }
-
 
         #region Methods
 
         public override string ToString() 
         {
+
+            _rankNumber = _cardIndex % 13;
+            _suitNumber = _cardIndex / 13;
+
             string rankSymbol = string.Empty; // Declare empty variable
             string suitSymbol = string.Empty;
 
@@ -71,10 +74,10 @@ namespace Towery.GameOfWar
                      suitSymbol = ((char)4).ToString(); // Diamond
                      break;
                  case 2:
-                     suitSymbol = ((char)5).ToString(); // Spade
+                     suitSymbol = ((char)5).ToString(); // Clubs
                      break;
                  case 3:
-                     suitSymbol = ((char)6).ToString(); // Clubs
+                     suitSymbol = ((char)6).ToString(); // Spades
                      break;
              }
 
@@ -82,8 +85,6 @@ namespace Towery.GameOfWar
         }
 
         #endregion
-
-
 
     }
 }
