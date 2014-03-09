@@ -5,21 +5,20 @@ using System.Text;
 
 namespace Towery.GameOfWar
 {
-    public class Cards : List<Card> 
+    public class Cards : List<int> 
     {
-      
-
         public void Shuffle()
         {
             Random rng = new Random();
             for (int n = this.Count - 1; n > 0; n--)
             {
                 int k = rng.Next(n + 1);
-                Card value = this[k];
+                int value = this[k];
                 this[k] = this[n];
                 this[n] = value;
             }
         }
+
     }
 
 /* Use this for extension method

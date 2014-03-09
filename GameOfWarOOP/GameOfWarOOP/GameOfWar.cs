@@ -22,19 +22,20 @@ namespace Towery.GameOfWar
             Initialization();
             GetPlayerNames();
             Console.Write("Welcome " + player1.PlayerName + " and " + player2.PlayerName + " to the Game of War.");
-            GetDeck();
-            //Console.WriteLine(deck);
+            MakeAndShuffleInitialDeck();
+
             Console.ReadKey();
         }
 
-        public void GetDeck() // Creates deck per card values 0 - 51
+        public void MakeAndShuffleInitialDeck() // Creates initial deck per card values 0 - 51, then shuffles
         {
             Cards deck = new Cards();
             for (int i = 0; i < 52; i++)
             {
-                deck.Add(i); // This is where error is
-                //Console.WriteLine(i);
+                deck.Add(i);
             }
+            deck.Shuffle();
+            //deck.ForEach(Console.WriteLine); // Writes each line of list
         }
 
         private void GetPlayerNames()
@@ -51,6 +52,8 @@ namespace Towery.GameOfWar
             CultureInfo cultureInfo = CultureInfo.CurrentCulture;
             textInfo = cultureInfo.TextInfo;
         }
+
+        public string deck { get; set; }
     }
 
 }
