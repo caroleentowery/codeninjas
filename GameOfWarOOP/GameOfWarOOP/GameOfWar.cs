@@ -13,21 +13,23 @@ namespace Towery.GameOfWar
         Player player1 = new Player();
         Player player2 = new Player();
 
+        public List<int> deck { get; set; }
+
         public void PlayGame()
         {
             //Testing returning card values
-            Card test = new Card(48); // creates new Card object named "test"
-            Console.WriteLine(test.ToString());
+            //Card test = new Card(48); // creates new Card object named "test"
+            //Console.WriteLine(test.ToString());
 
             Initialization();
             GetPlayerNames();
             Console.Write("Welcome " + player1.PlayerName + " and " + player2.PlayerName + " to the Game of War.");
             MakeAndShuffleInitialDeck();
-
+            DealCards(deck);
             Console.ReadKey();
         }
 
-        public void MakeAndShuffleInitialDeck() // Creates initial deck per card values 0 - 51, then shuffles
+        public List<int> MakeAndShuffleInitialDeck() // Creates initial deck per card values 0 - 51, then shuffles
         {
             Cards deck = new Cards();
             for (int i = 0; i < 52; i++)
@@ -35,7 +37,26 @@ namespace Towery.GameOfWar
                 deck.Add(i);
             }
             deck.Shuffle();
-            //deck.ForEach(Console.WriteLine); // Writes each line of list
+            deck.ForEach(Console.WriteLine); // Writes each line of list
+            return deck;
+        }
+
+        private void DealCards(List<int> deck) // Deals each player half the deck
+        {
+            player1.Hand = new Cards();
+            player2.Hand = new Cards();
+
+            //deck.ForEach(Console.WriteLine);
+
+            for (int i = 0; i < 26; i++)
+            {
+                player1.Hand.Add(deck[2 * i + 1]); // ERROR HERE - deck is null
+                player2.Hand.Add(deck[2 * i]);
+            }
+          
+            //player1.Hand.ForEach(Console.WriteLine);
+            //player2.Hand.ForEach(Console.WriteLine);
+
         }
 
         private void GetPlayerNames()
@@ -51,10 +72,8 @@ namespace Towery.GameOfWar
         {
             CultureInfo cultureInfo = CultureInfo.CurrentCulture;
             textInfo = cultureInfo.TextInfo;
-        }
+        }   
 
-        public string deck { get; set; }
-    }
-
-}
+    } // For class 
+} // For namespace
 
