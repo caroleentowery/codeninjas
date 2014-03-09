@@ -7,6 +7,8 @@ namespace Towery.GameOfWar
 {
     public class Cards : List<Card> 
     {
+      
+
         public void Shuffle()
         {
             Random rng = new Random();
